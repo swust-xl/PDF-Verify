@@ -58,10 +58,8 @@ public class PdfControllerImpl implements PdfController {
     @Override
     public CommonResp uploadPdf(@RequestPart MultipartFile file) throws Exception {
         Assert.notNull(file, "上传的文件不能为空");
-        if (!file.getOriginalFilename()
-                .endsWith("pdf")) {
-            throw new RuntimeException("文件必须是PDF格式");
-        }
+        Assert.isTrue(file.getOriginalFilename()
+                .endsWith("pdf"), "文件必须是PDF格式");
         SignVerifyResultResp resp = new SignVerifyResultResp(UserCode.SUCCESS);
         List<SignVerifyResp> list = pdfService.checkPdfSignature(file.getBytes());
         resp.setData(list);

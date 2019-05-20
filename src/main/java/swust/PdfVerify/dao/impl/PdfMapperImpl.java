@@ -59,7 +59,7 @@ public class PdfMapperImpl implements PdfMapper {
         DocRecord record = dsl.selectFrom(DOC)
                 .where(DOC.DOC_ID.eq(docId))
                 .fetchOne();
-        return record.into(Doc.class);
+        return record == null ? null : record.into(Doc.class);
     }
 
 }

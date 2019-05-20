@@ -18,6 +18,8 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -59,6 +61,7 @@ public class PdfServiceImpl implements PdfService {
 
     private static final Random RANDOM = new Random();
     private static final BASE64Encoder BASE64ENCODER = new BASE64Encoder();
+    private static final Logger LOG = LoggerFactory.getLogger(PdfServiceImpl.class);
 
     @Autowired
     private PdfMapper pdfMapper;
@@ -67,6 +70,7 @@ public class PdfServiceImpl implements PdfService {
     static {
         BouncyCastleProvider bcp = new BouncyCastleProvider();
         Security.insertProviderAt(bcp, 1);
+        LOG.info("加载算法库");
     }
 
     /**
@@ -87,6 +91,7 @@ public class PdfServiceImpl implements PdfService {
         Long pdfId = Long.valueOf(RANDOM.nextInt(9) + Math.abs(bytes.hashCode()));
         String pdfWebPath = pdfWebPathPrefix + pdfId + PDF_FILE_SUFFIX;
         Path pdfLocalPath = Paths.get(pdfLocalPathPrefix + pdfId + PDF_FILE_SUFFIX);
+        LOG.info("将ID为[{}]PDF文件保存到本地", pdfId);
         Files.write(pdfLocalPath, bytes);
         pdfMapper.insertDoc(new Doc(null, pdfWebPath, pdfId, pdfLocalPath.toString()));
         return pdfId;
